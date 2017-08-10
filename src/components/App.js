@@ -9,7 +9,7 @@ class App extends React.Component {
 
     this.state = {
       pets: [],
-      adoptedPets: [],
+      adoptedPets: [], //ID's only!!
       filters: {
         type: 'all',
       }
@@ -25,16 +25,59 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters onChangeType={this.changeFilter} onFindPetsClick={this.findPets} filters='all'/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser pets={this.state.pets} adoptedPets={this.state.adoptedPets} onAdoptPet={this.adoptPet}/>
             </div>
           </div>
         </div>
       </div>
     );
   }
-}
+
+  adoptPet = (petID) => {
+    this.setState({
+      adoptedPets: [...this.state.adoptedPets, petID]
+    })
+    console.log('pet adopted!')
+  }
+
+  changeFilter = (newType) => {
+    console.log('changing filter to ', newType)
+    this.setState({
+      filters: {
+        type: newType
+      }
+    })
+  }
+
+  findPets = (event) => {
+    let url = '/api/pets'
+    switch(this.state.filters.type) {
+      case 'cat':
+        url += '?type=cat'
+      break;
+      case 'dog':
+        url += '?type=dog'
+      break;
+      case 'micropig':
+        url += '?type=micropig'
+      break;
+      default:
+        console.log('blah')
+    }
+    console.log('Fetching' + url)
+    fetch(url)
+    .then((resp) => resp.json())
+    .then((resp) => this.createFromApi(resp))
+  }
+
+  createFromApi(resp) {
+    this.setState({pets: resp})
+  }
+
+
+} // end of class
 
 export default App;

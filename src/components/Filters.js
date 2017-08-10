@@ -1,8 +1,11 @@
 import React from 'react';
 
 class Filters extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.state = { type: props.filters.type }
+
   }
 
   render() {
@@ -10,7 +13,7 @@ class Filters extends React.Component {
       <div className="ui form">
         <h3>Animal type</h3>
         <div className="field">
-          <select name="type" id="type">
+          <select name="type" id="type" onChange={this.changeTheFilterInTheVerySpecificWayThisLabRequiresYouTo} value={this.state.type}>
             <option value="all">All</option>
             <option value="cat">Cats</option>
             <option value="dog">Dogs</option>
@@ -19,11 +22,19 @@ class Filters extends React.Component {
         </div>
 
         <div className="field">
-          <button className="ui secondary button">Find pets</button>
+          <button className="ui secondary button" onClick={this.props.onFindPetsClick}>Find pets</button>
         </div>
       </div>
     );
   }
-}
+
+  changeTheFilterInTheVerySpecificWayThisLabRequiresYouTo = (event) => {
+    this.setState({
+      type: event.target.value
+    }, () => {this.props.onChangeType(event.target.value)})
+
+  }
+
+} // end of class
 
 export default Filters;
